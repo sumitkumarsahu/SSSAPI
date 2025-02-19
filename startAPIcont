@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 import sys
 import argparse
-from classes.rclmgr_yml import rclmgr_yml
+from classes.apimgr_yml import rclmgr_yml
 import os
 import shutil
 
@@ -115,7 +115,7 @@ def main():
                 "Could not prepare the container"
             )
             sys.exit(6)
-        
+
 
 if __name__ == '__main__':
     try:
