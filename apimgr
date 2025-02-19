@@ -475,19 +475,19 @@ def main():
     allow_apimgr = os.getenv('ALLOW_APIMGR')
     if allow_apimgr is None:
         print(
-            "-- [WARNING] The tool 'apimgr' has been deprecated from 6.2.3.0 and newer. " +
+            "-- [WARNING] The tool 'apimgr' has been deprecated. " +
             "Please use 'startAPIcont' instead. --"
         )
         sys.exit(0)
     elif allow_apimgr == "1":
         print(
-            "-- [WARNING] The tool 'apimgr' has been deprecated from 6.2.3.0 and newer. " +
+            "-- [WARNING] The tool 'apimgr' has been deprecated. " +
             "Proceeding to use apimgr since you are focing it by export ALLOW_APIMGR=1. " +
             "Please avoid using this flag out of an IBM facility. --"
         )
     else:
         print(
-            "-- [WARNING] The tool 'apimgr' has been deprecated from 6.2.3.0 and newer. " +
+            "-- [WARNING] The tool 'apimgr' has been deprecated. " +
             "Please use 'startAPIcont' instead. --"
         )
         sys.exit(0)
