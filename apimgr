@@ -21,11 +21,13 @@ def readconf(input0):
     global IMAGE_NAME
     global IMAGE_VERSION
     global API_PORT
+    global SSH_PORT
 
     UTILITY_HOSTNAME = None
     IMAGE_NAME = None
     IMAGE_VERSION = None
     API_PORT = None
+    SSH_PORT = None
 
     with open(input0.config_file, 'r') as ymlfile:
         # cfg = yaml.safe_load(ymlfile, Loader=yaml.SafeLoader)
@@ -58,6 +60,12 @@ def readconf(input0):
     if API_PORT is None:
         print("-- [ERROR] API Server port should be provided inside apimgr.yml file... --")
         sys.exit(1)
+
+    # ESS API Server SSH Port, default 20022
+    if "SSH_PORT" in cfg["CONTAINER"]:
+        SSH_PORT = str(cfg["CONTAINER"]["SSH_PORT"])
+    if SSH_PORT is None:
+        SSH_PORT = 20022
 
     checkdir()
 
@@ -153,6 +161,7 @@ def clean_nftables():
 def run_container(force, is_startapicont=False):
     global UTILITY_HOSTNAME
     global API_PORT
+    global SSH_PORT
     global IMAGE_NAME
     global IMAGE_VERSION
 
@@ -254,7 +263,8 @@ def run_container(force, is_startapicont=False):
             cmd += network
 
         cmd += container_env_details
-        container_ports_details = " -p " + API_PORT + ":" + "46443" + "/tcp"
+        container_ports_details = " -p " + API_PORT + ":" + "46443" + "/tcp" + \
+            " -p " + SSH_PORT + ":" + "22" + "/tcp"
         cmd += container_ports_details
 
         cmd += " --sysctl net.ipv6.conf.all.disable_ipv6=1"
