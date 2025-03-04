@@ -253,8 +253,6 @@ def run_container(force, is_startapicont=False):
             " --env \"UTILITY_RAS_IP=" + cfg["CONTAINER"]["RAS_INTERFACE_IP"] + "\"" + \
             " --env \"CONTAINER_HOSTNAME=" + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + "\"" + \
             " --env \"CONTAINER_DOMAIN_NAME=" + cfg["CONTAINER"]["CONTAINER_DOMAIN_NAME"] + "\"" + \
-            " --env \"ESS_BUILD=" + cfg["CONTAINER"]["ESS_BUILD"] + "\"" + \
-            " --env \"ESS_BUILD_SHA256="+ cfg["CONTAINER"]["ESS_BUILD_SHA256"] + "\"" +\
             " --env \"CONTAINER_VERSION=6.2.3.0\""
 
         if "CONTAINER_NETWORK_NAME" in cfg["CONTAINER"]:

@@ -57,8 +57,6 @@ STATIC_apimgr_YML = {
     'LOG': '/tmp/log',
     'BKUP': '/tmp/backup',
     'BUILDS': '/tmp/builds',
-    'ESS_BUILD': 'ess_6.2.3.0_0206-22_dme_x86_64.tar.xz',
-    'ESS_BUILD_SHA256': 'ess_6.2.3.0_0206-22_dme_x86_64.tar.xz.sha256'
 }
 
 CONFIG_apimgr_YML = {
