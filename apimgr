@@ -237,7 +237,7 @@ def run_container(force, is_startapicont=False):
         clean_nftables()
 
         # ------------------------------------
-        # Forming correct podman run command.
+        # Forming correct podman create command.
         # ------------------------------------
         cmd = "podman create --privileged --syslog" + \
             " --hostname=\"" + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + '.' + cfg["CONTAINER"]["CONTAINER_DOMAIN_NAME"] + "\"" + \
