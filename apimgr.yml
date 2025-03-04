@@ -38,16 +38,16 @@ CONTAINER:
     # Container image version detail
     # ------------------------------------------------------
     # Image Name
-    IMAGE_NAME: quay.io/sumitkuo_ibm/sssapi_6.2.3.0_dme
+    IMAGE_NAME: quay.io/sumitkuo_ibm/sssapi_6.2.3.0
 
     # Image Version
-    IMAGE_VERSION: 0211-06
+    IMAGE_VERSION: 0304-15
 
     # ------------------------------------------------------
     # ESS BUILD Details to be as part of API container.
     # ------------------------------------------------------
-    ESS_BUILD: ess_6.2.3.0_0206-22_dme_x86_64.tar.xz
-    ESS_BUILD_SHA256: ess_6.2.3.0_0206-22_dme_x86_64.tar.xz.sha256
+    ESS_BUILD: ess_6.2.3.0_0301-01.tar.xz
+    ESS_BUILD_SHA256: ess_6.2.3.0_0301-01.tar.xz.sha256
 
     # ----------------------------------
     # log and backup location. These are the location on the container hosting node.
