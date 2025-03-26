@@ -48,4 +48,4 @@ CONTAINER:
     # ----------------------------------
     LOG: /home/apiadmin/log
     BKUP: /home/apiadmin/backup
-    BUILDS: /home/apiadmin/essbuilds
+    BUILDS: /serv
