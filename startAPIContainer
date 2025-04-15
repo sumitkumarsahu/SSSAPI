@@ -9,7 +9,7 @@
 #
 # -----------------------------------------------------------------------------
 #
-# File name: startRCLcont
+# File name: startAPIContainer
 # Description: It creates a sanitized rclmgr.yml based on input and system
 # -----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 import sys
 import argparse
-from classes.apimgr_yml import rclmgr_yml
+from classes.apimgr_yml import apimgr_yml
 import os
 import shutil
 
@@ -38,38 +38,46 @@ def parse_arguments():
         help='Show verbose messages in console',
         default=False)
 
+    parser.add_argument(
+        '-f',
+        '--file-name',
+        action='store',
+        dest='filename',
+        help='Restore from local container tar ball. SSSDEPLOYGUI.tar',
+        default=None)
 
     args = parser.parse_args()
 
-    return args.verbose
+    return args.verbose, args.filename
 
 
 def copyLogs():
-    baseVarLogDirExists = os.path.isdir("/var/log/ess")
+    baseVarLogDirExists = os.path.isdir("/var/log/sssapi")
     if baseVarLogDirExists:
-        startRCLcontVarLogExists = os.path.isdir("/var/log/ess/startRCLcont")
+        startRCLcontVarLogExists = os.path.isdir("/var/log/sssapi/startAPIContainer")
         if not startRCLcontVarLogExists:
-            os.mkdir("/var/log/ess/startRCLcont")
+            os.mkdir("/var/log/sssapi/startAPIContainer")
         logsExists = os.path.isdir("logs")
         if not logsExists:
             os.mkdir("logs")
         for logFile in os.listdir("logs"):
             srcLogFile = "logs/" + logFile
-            dstLogFile = "/var/log/ess/startRCLcont/" + logFile
+            dstLogFile = "/var/log/sssapi/startAPIContainer/" + logFile
             if os.path.isfile(srcLogFile):
                 shutil.copy(srcLogFile, dstLogFile)
 
 
 def main():
-    verbose = parse_arguments()
-    our_yml = rclmgr_yml(
+    verbose, filename = parse_arguments()
+    our_yml = apimgr_yml(
         verbose,
+        filename
     )
     # We need to ensure exit before this if clean up
     our_yml.run_log.debug(
         "Going to invoke input data method from main program"
     )
-    entries_NOK = our_yml.startRCLcont()
+    entries_NOK = our_yml.startRCLContainer()
     if entries_NOK:
         our_yml.run_log.error(
             "The file has been written but does not " +
@@ -83,7 +91,7 @@ def main():
     else:
         our_yml.run_log.debug(
             "Could generate the needed information into YML, " +
-            "going to start the RCL container"
+            "going to start the SSS API container"
         )
         our_yml.run_log.debug(
             "Going to prepare the container"
@@ -107,7 +115,7 @@ def main():
                 our_yml.run_log.info(
                     "They had been some issues on the run, please " +
                     "check the above messages and follow up with " +
-                    "using './startRCLcont'. Thanks"
+                    "using './startRCLContainer'. Thanks"
                 )
                 sys.exit(5)
         else:
@@ -115,7 +123,6 @@ def main():
                 "Could not prepare the container"
             )
             sys.exit(6)
-
 
 if __name__ == '__main__':
     try:

@@ -32,7 +32,7 @@ CONTAINER:
     # ------------------------------------------------------
     # SSS API SSH Port, Default 20022, Development purpose only.
     # ------------------------------------------------------
-    # SSH_PORT: 20022
+    SSH_PORT: 20022
 
     # ------------------------------------------------------
     # Container image version detail

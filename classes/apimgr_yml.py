@@ -54,15 +54,20 @@ STATIC_apimgr_YML = {
     'CAMPUS_INTERFACE': 'campus',
     'RAS_INTERFACE': 'virbr1',
     'RAS_INTERFACE_IP': '10.23.16.1',
+    'IMAGE_NAME': 'cp.stg.icr.io/cp/scalesystem/sss_sssapi',
+    'SSH_PORT': '20022',
+    'API_PORT': '46443',
+
     'LOG': '/tmp/log',
     'BKUP': '/tmp/backup',
     'BUILDS': '/tmp/builds',
 }
 
 CONFIG_apimgr_YML = {
-    'CONTAINER_DOMAIN_NAME': 'localdomain',
+    'CONTAINER_DOMAIN_NAME': 'gpfs.local',
     'UTILITY_HOSTNAME': 'utilityBareMetal',
-    'CAMPUS_INTERFACE_IP': '192.168.100.10'
+    'CAMPUS_INTERFACE_IP': '192.168.100.10',
+    'IMAGE_VERSION': '6.2.3.0'
 }
 
 
@@ -126,7 +131,8 @@ class apimgr_yml(object):
 
     def __init__(
             self,
-            verbose
+            verbose,
+            filename
             ):
         self.filename = "apimgr.yml"
         self.verbose = verbose
@@ -139,7 +145,7 @@ class apimgr_yml(object):
         self.static_apimgr_yml = STATIC_apimgr_YML
         self.config_apimgr_yml = CONFIG_apimgr_YML
         currentDirectory = os.getcwd()
-        self.my_dir = currentDirectory.split("/")[-1]
+        self.IMAGE_TARBALL = filename
 
         self.cfg_loaded, self.cfg = self.__load_yml_file()
         if self.cfg_loaded:
@@ -210,7 +216,9 @@ class apimgr_yml(object):
                 self.run_log.error("virbr1 / RAS interface does not exist in this system")
             sys.exit(4)
 
-
+        # Lets deal with IMAGE_NAME if applicable
+        self.IMAGE_NAME = self.container['IMAGE_NAME']
+        self.IMAGE_VERSION = self.__ask_IMAGE_VERSION()
 
         self.run_log.debug(
             "We use UTILITY hostname to derivate names for Management. Safe option."
@@ -223,10 +231,10 @@ class apimgr_yml(object):
         self.__podman_bin_exists()
         self.__nmcli_bin_exists()
 
-        self.__SSR_SQL_check()
+        # self.__SSR_SQL_check()
 
 
-    def startAPIcont(self):
+    def startAPIContainer(self):
         # Print logs message
         print(
             "\nDetailed logs are located on " +
@@ -258,9 +266,6 @@ class apimgr_yml(object):
         # Lets check RAS IP is the expected one
         self.__check_RAS_IP()
 
-        # Lets check we can reach the endpoints
-        self.__reach_endpoints()
-
         # Lets merge the container information
         self.run_log.debug(
             "Going to merge configurable parameters to be written"
@@ -270,6 +275,7 @@ class apimgr_yml(object):
         self.merged_cfg.update({'CONTAINER_DOMAIN_NAME': self.DNS_domain})
         self.merged_cfg.update({'UTILITY_HOSTNAME': self.UTILITY_HOSTNAME})
         self.merged_cfg.update({'CAMPUS_INTERFACE_IP': self.CAMPUS_IPv4})
+        self.merged_cfg.update({'IMAGE_VERSION': self.IMAGE_VERSION})
         #self.merged_cfg.update({'RAS_INTERFACE_IP': self.RAS_IPv4})
 
         # the static entries. We should readapt the function that does this
@@ -333,6 +339,31 @@ class apimgr_yml(object):
         # Few things can be tweaked about reloads and static
         # Not a big deal yet as check is fast
         return entries_NOK
+
+    def __ask_IMAGE_VERSION(self):
+        # User wants to change hostname we change or exit if cancel
+        try:
+            while True:
+                self.run_log.debug(
+                    "Going to ask the user for a Image Version"
+                )
+                IMAGE_VERSION_user = input(
+                    "Please type a Image Version : "
+                )
+                if IMAGE_VERSION_user == "6.2.3.0":
+                    break
+                else:
+                    print("\nImage name should be 6.2.3.0")
+            return IMAGE_VERSION_user
+        except KeyboardInterrupt:
+            print("")
+            self.run_log.error(
+                "User cancelled EMS hostname input\n"
+            )
+            self.run_log.debug(
+                "Going to terminate with RC 6"
+            )
+            sys.exit(6)
 
     def __write_YML_file(self):
         # We save original file as .bak and create new with gathered data
@@ -552,7 +583,6 @@ class apimgr_yml(object):
         apimgr_yml_log = logging.getLogger(self.filename)
         return apimgr_yml_log
 
-
     def __load_yml_file(self):
         cfg_loaded = False
         self.run_log.debug(
@@ -595,7 +625,6 @@ class apimgr_yml(object):
             )
             cfg_loaded = False
         return (cfg_loaded, cfg)
-
 
     def __is_valid_FQDN(self, hostname, domain):
         # We check is RFC1035 + RFC3696 prefered options
@@ -835,7 +864,6 @@ class apimgr_yml(object):
             )
         return static_entries_error
 
-
     def __check_IP_in_netblock(self, IP, net_block):
         self.run_log.debug(
             "Going to check if IP " +
@@ -867,7 +895,6 @@ class apimgr_yml(object):
                 str(net_block)
             )
         return is_in
-
 
     def __check_IP(self, IP_to_check):
         self.run_log.debug(
@@ -913,7 +940,6 @@ class apimgr_yml(object):
                 " and we do not accept it"
             )
         return FQDN_is_OK
-
 
     def __check_name_IP(self, hostname, ip_address):
         all_OK = True
@@ -1230,7 +1256,6 @@ class apimgr_yml(object):
 
         return config_entries_error
 
-
     def __check_apiadmin_user(self):
         self.run_log.debug(
             "Going to check if this tool is been run with apiadmin user"
@@ -1248,7 +1273,6 @@ class apimgr_yml(object):
                 "Going to terminate with RC 15"
             )
             sys.exit(15)
-
 
     def prep_container(self):
         # Every start we check that not running already, if not running we delete the image
@@ -1295,103 +1319,99 @@ class apimgr_yml(object):
             return False
 
         # Lets install the image, it might be there already
-
-
-        image_file = self.my_dir.replace(".dir", ".tar")
-        self.run_log.debug(
-            "Going to check if " +
-            image_file +
-            " exists"
-        )
-        image_file_OK = os.path.isfile(image_file)
-        if image_file_OK:
+        image_file = None
+        if self.IMAGE_TARBALL is not None:
+            image_file = self.IMAGE_TARBALL
             self.run_log.debug(
-                "The image file " +
+                "Going to check if " +
                 image_file +
                 " exists"
             )
-            self.run_log.info(
-                "Going to install " +
-                image_file +
-                ". Equivalent command is 'apimgr -f " +
-                image_file +
-                " -i'"
-            )
-
-            # Lets use apimgr install tools
-            try:
+            image_file_OK = os.path.isfile(image_file)
+            if image_file_OK:
                 self.run_log.debug(
-                    "Going to import apimgr"
-                )
-                import classes.apimgr as apimgr
-                self.run_log.debug(
-                    "Imported apimgr"
-                )
-            except ImportError:
-                self.run_log.error(
-                    "Cannot import apimgr"
-                )
-                self.run_log.debug(
-                    "Going to terminate with RC 22"
-                )
-                sys.exit(22)
-            # We have apimgr loaded now
-            input0 = argparse.Namespace(
-                config_file='apimgr.yml',
-                force=False,
-                image_file_name=image_file,
-                install=True,
-                tag_name=None,
-                create_network=False,
-                network_name="ess_network",
-                rcont=False)
-            self.run_log.debug(
-                "Going to readconf with apimgr"
-            )
-            try:
-                apimgr.readconf(input0)
-                self.run_log.debug(
-                    "Success readconf with apimgr"
-                )
-            except BaseException:
-                self.run_log.error(
-                    "Could not readconf with apimgr"
-                )
-                self.run_log.debug(
-                    "Going to terminate with RC 23"
-                )
-                sys.exit(23)
-            self.run_log.info(
-                "Going to install the image " +
-                image_file +
-                ". It would do no changes if already installed."
-            )
-            try:
-                self.run_log.debug(
-                    "Going to run apimgr installimage"
-                )
-                apimgr.installimage(input0)
-                self.run_log.info(
-                    "Image " +
+                    "The image file " +
                     image_file +
-                    " has been installed succesfully."
+                    " exists"
                 )
-            except BaseException:
-                err = sys.exc_info()[0]
-                # We are back on error
                 self.run_log.info(
-                    "Image " +
+                    "Going to install " +
                     image_file +
-                    " has failed to install with " +
-                    str(err)
+                    ". Equivalent command is 'apimgr -f " +
+                    image_file +
+                    " -i'"
+                )
+            # File does not exists
+            else:
+                self.run_log.error(
+                    "The image file " +
+                    image_file +
+                    " does not exist"
                 )
                 return False
-        # File does not exists
-        else:
+
+        # Lets use apimgr install tools
+        try:
+            self.run_log.debug(
+                "Going to import apimgr"
+            )
+            import classes.apimgr as apimgr
+            self.run_log.debug(
+                "Imported apimgr"
+            )
+        except ImportError:
             self.run_log.error(
-                "The image file " +
-                image_file +
-                " does not exist"
+                "Cannot import apimgr"
+            )
+            self.run_log.debug(
+                "Going to terminate with RC 22"
+            )
+            sys.exit(22)
+        # We have apimgr loaded now
+        input0 = argparse.Namespace(
+            config_file='apimgr.yml',
+            force=True,
+            image_file_name=image_file,
+            install=True,
+            create_network=False,
+            network_name="ess_network",
+            run=False)
+        self.run_log.debug(
+            "Going to readconf with apimgr"
+        )
+        try:
+            apimgr.readconf(input0)
+            self.run_log.debug(
+                "Success readconf with apimgr"
+            )
+        except BaseException:
+            self.run_log.error(
+                "Could not readconf with apimgr"
+            )
+            self.run_log.debug(
+                "Going to terminate with RC 23"
+            )
+            sys.exit(23)
+        self.run_log.info(
+            "Going to install the image. It would do no changes if already installed."
+        )
+        try:
+            self.run_log.debug(
+                "Going to run apimgr installimage"
+            )
+            if input0.image_file_name is not None:
+                apimgr.install_image_from_file(input0.image_file_name, input0.force)
+            else:
+                apimgr.install_image_from_repo(input0.force)
+            self.run_log.info(
+                "Image has been installed succesfully."
+            )
+        except BaseException:
+            err = sys.exc_info()[0]
+            # We are back on error
+            self.run_log.info(
+                "Image installation has failed to install with " +
+                str(err)
             )
             return False
 
@@ -1422,10 +1442,9 @@ class apimgr_yml(object):
             force=False,
             image_file_name=None,
             install=False,
-            tag_name=None,
             create_network=False,
             network_name="ess_network",
-            rcont=True
+            run=True
             )
         self.run_log.debug(
             "Going to readconf with apimgr"
@@ -1444,7 +1463,7 @@ class apimgr_yml(object):
             )
             sys.exit(23)
         self.run_log.info(
-            "Going to start the container. On further runs use 'startRCcont' " +
+            "Going to start the container. On further runs use 'startAPIContainer' " +
             "command to manage this container"
         )
 
@@ -1452,7 +1471,7 @@ class apimgr_yml(object):
             self.run_log.debug(
                 "Going to run apimgr runcont"
             )
-            apimgr.runcont(input0, True)
+            apimgr.run_container(input0, True)
         except BaseException:
             # We are back
             self.run_log.error(
@@ -1469,7 +1488,6 @@ class apimgr_yml(object):
             "We are back from apimgr runcont normal mode"
         )
         return True
-
 
     def __podman_bin_exists(self):
         self.run_log.debug(
@@ -1507,12 +1525,11 @@ class apimgr_yml(object):
             )
             sys.exit(28)
 
-
     def __SSR_SQL_check(self):
         # During SSR essutils  flow an SQL DB is created
         # We will use that to confirm SSR flow was indeed used
         # This is the first time we do this so warning and basic check
-        sqlite3_DB_file = '/opt/ibm/ess/tools/conf/essutils.sql'
+        sqlite3_DB_file = '/home/apiadmin/backup/essutils.sql'
         self.run_log.debug(
             "Going to check if SSR/essutils sqlite3 DB file exists"
         )
@@ -1561,7 +1578,6 @@ class apimgr_yml(object):
                 "Going to terminate with RC 31"
             )
             sys.exit(31)
-
 
     def __check_RAS_IP(self):
         self.run_log.debug(
@@ -1702,7 +1718,6 @@ class apimgr_yml(object):
         else:
             return True
 
-
     def __get_installed_containers(self):
         # Generates a JSON list of intalled containers
         self.run_log.debug(
@@ -1730,7 +1745,6 @@ class apimgr_yml(object):
             )
             container_list = []
         return container_list
-
 
     def __alreadyUP(self, img_str_find):
         self.run_log.debug(
