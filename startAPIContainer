@@ -77,7 +77,7 @@ def main():
     our_yml.run_log.debug(
         "Going to invoke input data method from main program"
     )
-    entries_NOK = our_yml.startRCLContainer()
+    entries_NOK = our_yml.startAPIContainer()
     if entries_NOK:
         our_yml.run_log.error(
             "The file has been written but does not " +
@@ -115,7 +115,7 @@ def main():
                 our_yml.run_log.info(
                     "They had been some issues on the run, please " +
                     "check the above messages and follow up with " +
-                    "using './startRCLContainer'. Thanks"
+                    "using './startAPIContainer'. Thanks"
                 )
                 sys.exit(5)
         else:
