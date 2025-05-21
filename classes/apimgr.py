@@ -380,6 +380,7 @@ def install_image_from_repo(force):
         rc = 1
     else:
         print("-- [INFO] Service container image has been pulled successfully... --")
+        print("-- [INFO] run ./deployguimgr -r to setup the service container... ---")
         rc = 0
 
     return rc
