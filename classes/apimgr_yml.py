@@ -1439,7 +1439,7 @@ class apimgr_yml(object):
             sys.exit(22)
         input0 = argparse.Namespace(
             config_file='apimgr.yml',
-            force=False,
+            force=True,
             image_file_name=None,
             install=False,
             create_network=False,
