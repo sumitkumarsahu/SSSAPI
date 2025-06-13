@@ -6,7 +6,7 @@ CONTAINER:
   CAMPUS_INTERFACE_IP: 9.114.12.77
   CONTAINER_DOMAIN_NAME: gpfs.local
   CONTAINER_HOSTNAME: utilityBareMetal-api-official
-  IMAGE_NAME: cp.stg.icr.io/cp/scalesystem/sss_api
+  IMAGE_NAME: cp.icr.io/cp/scalesystem/sss_api
   IMAGE_VERSION: 6.2.3.0
   LOG: /home/apiadmin/log
   RAS_INTERFACE: virbr1
