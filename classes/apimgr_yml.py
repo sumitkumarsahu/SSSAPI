@@ -1471,7 +1471,7 @@ class apimgr_yml(object):
             self.run_log.debug(
                 "Going to run apimgr runcont"
             )
-            apimgr.run_container(input0, True, self.IMAGE_VERSION)
+            apimgr.run_container(input0, True)
         except BaseException:
             # We are back
             self.run_log.error(
