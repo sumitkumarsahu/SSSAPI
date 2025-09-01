@@ -54,7 +54,7 @@ STATIC_apimgr_YML = {
     'CAMPUS_INTERFACE': 'campus',
     'RAS_INTERFACE': 'virbr1',
     'RAS_INTERFACE_IP': '10.23.16.1',
-    'IMAGE_NAME': 'cp.icr.io/cp/scalesystem/sss_api',
+    'IMAGE_NAME': 'cp.stg.icr.io/cp/scalesystem/sss_api',
     'SSH_PORT': '20022',
     'API_PORT': '46443',
 
@@ -353,7 +353,7 @@ class apimgr_yml(object):
                 if IMAGE_VERSION_user == "6.2.3.0" or IMAGE_VERSION_user == "6.2.3.1" or IMAGE_VERSION_user == "6.2.3.2" or IMAGE_VERSION_user == "7.0.0.0":
                     break
                 else:
-                    print("\nImage name should be 6.2.3.0/ 6.2.3.1/6.2.3.2 or 7.0.0.0")
+                    print("\nImage name should be 6.2.3.0 or 6.2.3.1 or 6.2.3.2 or 7.0.0.0")
             return IMAGE_VERSION_user
         except KeyboardInterrupt:
             print("")
