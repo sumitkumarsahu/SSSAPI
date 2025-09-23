@@ -365,6 +365,8 @@ class apimgr_yml(object):
                 if CAMPUS_INTERFACE_user == "":
                     CAMPUS_INTERFACE_user = "campus"
                     break
+                else:
+                    break
             return CAMPUS_INTERFACE_user
         except KeyboardInterrupt:
             print("")
@@ -419,6 +421,8 @@ class apimgr_yml(object):
                 )
                 if API_PORT_user == "":
                     API_PORT_user = "46443"
+                    break
+                else:
                     break
             return API_PORT_user
         except KeyboardInterrupt:
