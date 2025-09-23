@@ -397,7 +397,7 @@ class apimgr_yml(object):
                         IMAGE_VERSION_user == "7.0.0.0":
                     break
                 else:
-                    print("\nImage name should be 6.2.3.0 or 6.2.3.1 or 6.2.3.2 or 7.0.0.0")
+                    print("Image name should be 6.2.3.0 or 6.2.3.1 or 6.2.3.2 or 7.0.0.0\n")
             return IMAGE_VERSION_user
         except KeyboardInterrupt:
             print("")
@@ -426,7 +426,7 @@ class apimgr_yml(object):
                     if API_PORT_user.isdigit() and len(API_PORT_user) == 5:
                         break
                     else:
-                        print("\nAPI port should be a 5 digit numeric number. Make the entered tcp port is free and available.")
+                        print("API port should be a 5 digit numeric number. Make the entered tcp port is free and available.\n")
             return API_PORT_user
         except KeyboardInterrupt:
             print("")
