@@ -423,7 +423,8 @@ class apimgr_yml(object):
                     API_PORT_user = "46443"
                     break
                 else:
-                    break
+                    if API_PORT_user.isdigit() and len(API_PORT_user) == 5:
+                        break
             return API_PORT_user
         except KeyboardInterrupt:
             print("")
