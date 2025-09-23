@@ -425,6 +425,8 @@ class apimgr_yml(object):
                 else:
                     if API_PORT_user.isdigit() and len(API_PORT_user) == 5:
                         break
+                    else:
+                        print("\nAPI port should be a 5 digit numeric number. Make the entered tcp port is free and available.")
             return API_PORT_user
         except KeyboardInterrupt:
             print("")
