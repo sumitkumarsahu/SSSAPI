@@ -133,7 +133,10 @@ class apimgr_yml(object):
     def __init__(
             self,
             verbose,
-            filename
+            filename,
+            port,
+            campus_interface,
+            image_version
             ):
         self.filename = "apimgr.yml"
         self.verbose = verbose
@@ -147,6 +150,9 @@ class apimgr_yml(object):
         self.config_apimgr_yml = CONFIG_apimgr_YML
         currentDirectory = os.getcwd()
         self.IMAGE_TARBALL = filename
+        self.CAMPUS_INTERFACE = campus_interface
+        self.API_PORT = port
+        self.IMAGE_VERSION = image_version
 
         self.cfg_loaded, self.cfg = self.__load_yml_file()
         if self.cfg_loaded:
@@ -183,19 +189,20 @@ class apimgr_yml(object):
             )
 
         # Lets deal with CAMPUS if applicable
-        self.CAMPUS_INTERFACE = self.__ask_CAMPUS_INTERFACE()
-        if self.CAMPUS_INTERFACE != "":
-            self.CAMPUS_IPv4 = self.__get_IP_address(
-                self.CAMPUS_INTERFACE,
-                "CAMPUS"
-            )
-        elif "CAMPUS_INTERFACE" in self.container:
-            self.CAMPUS_IPv4 = self.__get_IP_address(
-                self.container['CAMPUS_INTERFACE'],
-                "CAMPUS"
-            )
-        else:
-            self.CAMPUS_IPv4 = self.container['CAMPUS_INTERFACE_IP']
+        if self.CAMPUS_INTERFACE is None:
+            self.CAMPUS_INTERFACE = self.__ask_CAMPUS_INTERFACE()
+            if self.CAMPUS_INTERFACE != "":
+                self.CAMPUS_IPv4 = self.__get_IP_address(
+                    self.CAMPUS_INTERFACE,
+                    "CAMPUS"
+                )
+            elif "CAMPUS_INTERFACE" in self.container:
+                self.CAMPUS_IPv4 = self.__get_IP_address(
+                    self.container['CAMPUS_INTERFACE'],
+                    "CAMPUS"
+                )
+            else:
+                self.CAMPUS_IPv4 = self.container['CAMPUS_INTERFACE_IP']
 
         if self.CAMPUS_IPv4 is None:
             campus_interface_exist = self.__check_interface_exists("campus")
@@ -225,10 +232,12 @@ class apimgr_yml(object):
 
         # Lets deal with IMAGE_NAME if applicable
         self.IMAGE_NAME = self.container['IMAGE_NAME']
-        self.IMAGE_VERSION = self.__ask_IMAGE_VERSION()
+        if self.IMAGE_VERSION is None:
+            self.IMAGE_VERSION = self.__ask_IMAGE_VERSION()
 
         # Lets deal with API Port if applicable
-        self.API_PORT = self.__ask_API_PORT()
+        if self.API_PORT is None:
+            self.API_PORT = self.__ask_API_PORT()
 
         self.run_log.debug(
             "We use UTILITY hostname to derivate names for Management. Safe option."

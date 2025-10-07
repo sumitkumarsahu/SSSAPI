@@ -46,9 +46,33 @@ def parse_arguments():
         help='Restore from local container tar ball. SSSDEPLOYGUI.tar',
         default=None)
 
+    parser.add_argument(
+        '-p',
+        '--port',
+        action='store',
+        dest='port',
+        help='API Server port on which server should listen',
+        default=None)
+
+    parser.add_argument(
+        '-i',
+        '--campus-interface',
+        action='store',
+        dest='campus_interface',
+        help='Name of the interface connected to campus network',
+        default=None)
+
+    parser.add_argument(
+        '-vn',
+        '--image-version',
+        action='store',
+        dest='image_version',
+        help='API Server version to be deployed',
+        default=None)
+
     args = parser.parse_args()
 
-    return args.verbose, args.filename
+    return args.verbose, args.filename, args.port, args.campus_interface, args.image_version
 
 
 def copyLogs():
@@ -68,10 +92,13 @@ def copyLogs():
 
 
 def main():
-    verbose, filename = parse_arguments()
+    verbose, filename, port, campus_interface, image_version = parse_arguments()
     our_yml = apimgr_yml(
         verbose,
-        filename
+        filename,
+        port,
+        campus_interface,
+        image_version
     )
     # We need to ensure exit before this if clean up
     our_yml.run_log.debug(
