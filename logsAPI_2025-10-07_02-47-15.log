@@ -1,0 +1,28 @@
+2025-10-07 02:47:15,762 DEBUG:	 Going to check if YML file apimgr.yml exists
+2025-10-07 02:47:15,762 DEBUG:	 Completed check for apimgr.yml and exists
+2025-10-07 02:47:15,762 DEBUG:	 Starting YML load of apimgr.yml
+2025-10-07 02:47:15,765 DEBUG:	 Successful load as YML from apimgr.yml
+2025-10-07 02:47:15,765 DEBUG:	 The YML file was loaded
+2025-10-07 02:47:15,765 DEBUG:	 Going to check if static keys exist on apimgr.yml and values are the expected ones
+2025-10-07 02:47:15,765 DEBUG:	 Key CONTAINER_HOSTNAME exists on apimgr.yml and value utilityBareMetal-api-official is the expected one
+2025-10-07 02:47:15,765 DEBUG:	 Key RAS_INTERFACE exists on apimgr.yml and value virbr1 is the expected one
+2025-10-07 02:47:15,765 DEBUG:	 Key RAS_INTERFACE_IP exists on apimgr.yml and value 10.23.16.1 is the expected one
+2025-10-07 02:47:15,765 DEBUG:	 Key IMAGE_NAME exists on apimgr.yml and value cp.stg.icr.io/cp/scalesystem/sss_api is the expected one
+2025-10-07 02:47:15,765 DEBUG:	 Key SSH_PORT exists on apimgr.yml and value 20022 is the expected one
+2025-10-07 02:47:15,765 DEBUG:	 Key LOG exists on apimgr.yml and value /home/apiadmin/log is the expected one
+2025-10-07 02:47:15,765 DEBUG:	 Key BKUP exists on apimgr.yml and value /home/apiadmin/backup is the expected one
+2025-10-07 02:47:15,765 DEBUG:	 Key BUILDS exists on apimgr.yml and value /serv is the expected one
+2025-10-07 02:47:15,765 DEBUG:	 Ending check static keys exist on apimgr.yml and values are the expected ones
+2025-10-07 02:47:15,765 DEBUG:	 Going to check if configurable keys exist on apimgr.yml
+2025-10-07 02:47:15,765 DEBUG:	 Key CONTAINER_DOMAIN_NAME exists on apimgr.yml and matches the file
+2025-10-07 02:47:15,765 DEBUG:	 Key UTILITY_HOSTNAME exists on apimgr.yml and matches the file
+2025-10-07 02:47:15,765 DEBUG:	 Key CAMPUS_INTERFACE exists on apimgr.yml and matches the file
+2025-10-07 02:47:15,765 DEBUG:	 Key CAMPUS_INTERFACE_IP exists on apimgr.yml and does not match the file
+2025-10-07 02:47:15,765 DEBUG:	 Key IMAGE_VERSION exists on apimgr.yml and matches the file
+2025-10-07 02:47:15,765 DEBUG:	 Key API_PORT exists on apimgr.yml and does not match the file
+2025-10-07 02:47:15,765 DEBUG:	 Ending check if configurable keys exist on apimgr.yml
+2025-10-07 02:47:15,765 DEBUG:	 The file apimgr.yml does have all the required entries.
+2025-10-07 02:47:15,765 DEBUG:	 Going to ask the user for a Campus interface name
+2025-10-07 02:47:17,790 ERROR:	 User cancelled Campus interface name input
+
+2025-10-07 02:47:17,791 DEBUG:	 Going to terminate with RC 6

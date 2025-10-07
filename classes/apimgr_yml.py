@@ -204,14 +204,14 @@ class apimgr_yml(object):
             else:
                 self.CAMPUS_IPv4 = self.container['CAMPUS_INTERFACE_IP']
 
-        if self.CAMPUS_IPv4 is None:
-            campus_interface_exist = self.__check_interface_exists("campus")
+            if self.CAMPUS_IPv4 is None:
+                campus_interface_exist = self.__check_interface_exists("campus")
 
-            if campus_interface_exist:
-                self.run_log.debug("Campus interface exists.")
-            else:
-                self.run_log.error("Campus interface does not exist in this system")
-            sys.exit(4)
+                if campus_interface_exist:
+                    self.run_log.debug("Campus interface exists.")
+                else:
+                    self.run_log.error("Campus interface does not exist in this system")
+                sys.exit(4)
 
         # Lets deal with RAS if applicable
         if "RAS_INTERFACE" in self.container:
