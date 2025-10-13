@@ -130,6 +130,13 @@ def main():
         is_emsvm23e_exist,
         emsvm23e_password
     )
+
+    if is_emsvm23e_exist is not None and (is_emsvm23e_exist.lower() != 'yes' and is_emsvm23e_exist.lower() != 'no'):
+        our_yml.run_log.error(
+            "The parameter for is-emsvm23e-exist should be either 'yes' or 'no'. Please fix and try again."
+        )
+        sys.exit(3)
+
     # We need to ensure exit before this if clean up
     our_yml.run_log.debug(
         "Going to invoke input data method from main program"
