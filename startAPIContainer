@@ -93,7 +93,7 @@ def parse_arguments():
         action='store',
         dest='emsvm23e_password',
         help='Password of root user of EMSVM-32E (default: cluster)',
-        default=None)
+        default="")
 
     args = parser.parse_args()
 

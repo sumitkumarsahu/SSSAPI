@@ -267,7 +267,6 @@ class apimgr_yml(object):
             )
             self.IS_EMSVM_23E_EXIST = self.__is_ESMVM23E_EXIST()
 
-        self.EMSVM23E_PASSWORD = ""
         if self.IS_EMSVM_23E_EXIST.lower() == "yes":
             if self.EMSVM23E_PASSWORD:
                 self.run_log.debug("We got EMSVM-23E password from command line.")
