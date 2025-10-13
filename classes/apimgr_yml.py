@@ -136,7 +136,10 @@ class apimgr_yml(object):
             filename,
             port,
             campus_interface,
-            image_version
+            image_version,
+            utilitybaremetal_password,
+            is_emsvm23e_exist,
+            emsvm23e_password
             ):
         self.filename = "apimgr.yml"
         self.verbose = verbose
@@ -153,6 +156,9 @@ class apimgr_yml(object):
         self.CAMPUS_INTERFACE = campus_interface
         self.API_PORT = port
         self.IMAGE_VERSION = image_version
+        self.UTILITYBAREMETAL_PASSWORD = utilitybaremetal_password
+        self.IS_EMSVM_23E_EXIST = is_emsvm23e_exist
+        self.EMSVM23E_PASSWORD = emsvm23e_password
 
         self.cfg_loaded, self.cfg = self.__load_yml_file()
         if self.cfg_loaded:
@@ -239,6 +245,40 @@ class apimgr_yml(object):
         # Lets deal with API Port if applicable
         if self.API_PORT is None:
             self.API_PORT = self.__ask_API_PORT()
+
+        # Lets deal with utilityBareMetal passwords if applicable
+        if self.UTILITYBAREMETAL_PASSWORD is not None and self.UTILITYBAREMETAL_PASSWORD != "":
+            self.run_log.debug(
+                "We got utilityBareMetal password from command line"
+            )
+        else:
+            self.run_log.debug(
+                "We do not have utilityBareMetal password from command line. reading it now"
+            )
+            self.UTILITYBAREMETAL_PASSWORD = self.__ask_UTILITYBAREMETAL_PASSWORD()
+
+        if self.IS_EMSVM_23E_EXIST is not None and self.IS_EMSVM_23E_EXIST != "":
+            self.run_log.debug(
+                "We got is EMSVM-23E exist from command line"
+            )
+        else:
+            self.run_log.debug(
+                "We do not have is EMSVM-23E exist from command line. reading it now"
+            )
+            self.IS_EMSVM_23E_EXIST = self.__is_ESMVM23E_EXIST()
+
+        if self.IS_EMSVM_23E_EXIST.lower() == "yes":
+            if self.EMSVM23E_PASSWORD:
+                self.run_log.debug("We got EMSVM-23E password from command line.")
+            else:
+                self.run_log.debug("EMSVM-23E password not provided via command line. Asking now...")
+                self.EMSVM23E_PASSWORD = self.__ask_EMSVM23E_PASSWORD()
+
+
+        with open("credentials.properties", "w") as file:
+            file.write(f"UTILITYBAREMETAL_PASSWORD={self.UTILITYBAREMETAL_PASSWORD}\n")
+            file.write(f"IS_EMSVM_23E_EXIST={self.IS_EMSVM_23E_EXIST}\n")
+            file.write(f"EMSVM23E_PASSWORD={self.EMSVM23E_PASSWORD}\n")
 
         self.run_log.debug(
             "We use UTILITY hostname to derivate names for Management. Safe option."
@@ -362,6 +402,84 @@ class apimgr_yml(object):
         # Not a big deal yet as check is fast
         return entries_NOK
 
+    def __ask_UTILITYBAREMETAL_PASSWORD(self):
+        # User wants to change campus interface we change or exit if cancel
+        try:
+            while True:
+                self.run_log.debug(
+                    "Going to ask the utlityBareMetal password"
+                )
+                UTILITYBAREMETAL_PASSWORD_user = input(
+                    "Please type utilityBareMetal password to setup passwordless SSH (default: cluster): "
+                )
+                if UTILITYBAREMETAL_PASSWORD_user == "":
+                    UTILITYBAREMETAL_PASSWORD_user = "cluster"
+                    break
+                else:
+                    break
+            return UTILITYBAREMETAL_PASSWORD_user
+        except KeyboardInterrupt:
+            print("")
+            self.run_log.error(
+                "User cancelled\n"
+            )
+            self.run_log.debug(
+                "Going to terminate with RC 6"
+            )
+            sys.exit(6)
+
+    def __is_ESMVM23E_EXIST(self):
+        # User wants to change campus interface we change or exit if cancel
+        try:
+            while True:
+                self.run_log.debug(
+                    "Going to ask is EMSVM-23E exists"
+                )
+                IS_EMSVM_23E_EXIST_user = input(
+                    "Going to ask is EMSVM-23E exists (default: no): "
+                )
+                if IS_EMSVM_23E_EXIST_user == "":
+                    IS_EMSVM_23E_EXIST_user = "no"
+                    break
+                elif IS_EMSVM_23E_EXIST_user == "yes" or IS_EMSVM_23E_EXIST_user == "no":
+                    break
+            return IS_EMSVM_23E_EXIST_user
+        except KeyboardInterrupt:
+            print("")
+            self.run_log.error(
+                "User cancelled\n"
+            )
+            self.run_log.debug(
+                "Going to terminate with RC 6"
+            )
+            sys.exit(6)
+
+    def __ask_EMSVM23E_PASSWORD(self):
+        # Ask EMSVm-23E password
+        try:
+            while True:
+                self.run_log.debug(
+                    "Going to ask the EMSVM-23E password"
+                )
+                EMSVM23E_PASSWORD_user = input(
+                    "Please type EMSVM-23E password to setup passwordless SSH (default: cluster): "
+                )
+                if EMSVM23E_PASSWORD_user == "":
+                    EMSVM23E_PASSWORD_user = "cluster"
+                    break
+                else:
+                    break
+            return EMSVM23E_PASSWORD_user
+        except KeyboardInterrupt:
+            print("")
+            self.run_log.error(
+                "User cancelled\n"
+            )
+            self.run_log.debug(
+                "Going to terminate with RC 6"
+            )
+            sys.exit(6)
+
     def __ask_CAMPUS_INTERFACE(self):
         # User wants to change campus interface we change or exit if cancel
         try:
@@ -370,7 +488,7 @@ class apimgr_yml(object):
                     "Going to ask the user for a Campus interface name"
                 )
                 CAMPUS_INTERFACE_user = input(
-                    "Please type a Campus interfae name (campus): "
+                    "Please type a Campus interfae name (default: campus): "
                 )
                 if CAMPUS_INTERFACE_user == "":
                     CAMPUS_INTERFACE_user = "campus"
@@ -396,7 +514,7 @@ class apimgr_yml(object):
                     "Going to ask the user for a Image Version"
                 )
                 IMAGE_VERSION_user = input(
-                    "Please type a Image Version (7.0.0.0): "
+                    "Please type a Image Version (default: 7.0.0.0): "
                 )
                 if IMAGE_VERSION_user == "":
                     IMAGE_VERSION_user = "7.0.0.0"
@@ -427,7 +545,7 @@ class apimgr_yml(object):
                     "Going to ask the user for a API Port number default 46443"
                 )
                 API_PORT_user = input(
-                    "Please type a API Port default (46443): "
+                    "Please type a API Port default (defalt: 46443): "
                 )
                 if API_PORT_user == "":
                     API_PORT_user = "46443"
@@ -486,7 +604,6 @@ class apimgr_yml(object):
                 "Going to terminate with RC 12"
             )
             sys.exit(12)
-
 
     def __checkContNotResolvable(self, containerShort):
         containerLong = containerShort + "." + self.DNS_domain
@@ -570,7 +687,6 @@ class apimgr_yml(object):
             )
         return canResolve
 
-
     def __get_UTILITY_HOSTNAME(self):
         self.run_log.debug(
             "Going to query UTILITY hostname"
@@ -581,7 +697,6 @@ class apimgr_yml(object):
             UTILITY_HOSTNAME
         )
         return UTILITY_HOSTNAME
-
 
     def __get_sys_domain(self):
         # Lets get the domain or fail RC 8 if none
@@ -604,7 +719,6 @@ class apimgr_yml(object):
             )
             sys.exit(8)
         return str(DNS_domain)
-
 
     def __create_output_dir(self):
         # Lets create the output dir
@@ -1702,7 +1816,6 @@ class apimgr_yml(object):
                 "Going to exit with RC=7"
             )
             sys.exit(7)
-
 
     def __delete_image(self, img_str_find):
 

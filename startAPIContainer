@@ -70,9 +70,36 @@ def parse_arguments():
         help='API Server version to be deployed. (default: 7.0.0.0)',
         default=None)
 
+
+    parser.add_argument(
+        '-up',
+        '--utilitybaremetal-password',
+        action='store',
+        dest='utilitybaremetal_password',
+        help='Password of root user of utilityBareMetal (default: cluster)',
+        default=None)
+
+    parser.add_argument(
+        '-e',
+        '--is-emsvm23e-exist',
+        action='store',
+        dest='is_emsvm23e_exist',
+        help='Is EMSVM-23E Exist (default: no)',
+        default=None)
+
+    parser.add_argument(
+        '-ep',
+        '--emsvm23e-password',
+        action='store',
+        dest='emsvm23e_password',
+        help='Password of root user of EMSVM-32E (default: cluster)',
+        default="")
+
     args = parser.parse_args()
 
-    return args.verbose, args.filename, args.port, args.campus_interface, args.image_version
+    return args.verbose, args.filename, \
+        args.port, args.campus_interface, args.image_version, \
+        args.utilitybaremetal_password, args.is_emsvm23e_exist, args.emsvm23e_password
 
 
 def copyLogs():
@@ -92,14 +119,24 @@ def copyLogs():
 
 
 def main():
-    verbose, filename, port, campus_interface, image_version = parse_arguments()
+    verbose, filename, port, campus_interface, image_version, utilitybaremetal_password, is_emsvm23e_exist, emsvm23e_password = parse_arguments()
     our_yml = apimgr_yml(
         verbose,
         filename,
         port,
         campus_interface,
-        image_version
+        image_version,
+        utilitybaremetal_password,
+        is_emsvm23e_exist,
+        emsvm23e_password
     )
+
+    if is_emsvm23e_exist is not None and (is_emsvm23e_exist.lower() != 'yes' and is_emsvm23e_exist.lower() != 'no'):
+        our_yml.run_log.error(
+            "The parameter for is-emsvm23e-exist should be either 'yes' or 'no'. Please fix and try again."
+        )
+        sys.exit(3)
+
     # We need to ensure exit before this if clean up
     our_yml.run_log.debug(
         "Going to invoke input data method from main program"
