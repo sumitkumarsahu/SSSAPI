@@ -410,7 +410,7 @@ class apimgr_yml(object):
                 if IS_EMSVM_23E_EXIST_user == "":
                     IS_EMSVM_23E_EXIST_user = "no"
                     break
-                elif IS_EMSVM_23E_EXIST_user == "yes":
+                elif IS_EMSVM_23E_EXIST_user == "yes" or IS_EMSVM_23E_EXIST_user == "no":
                     break
             return IS_EMSVM_23E_EXIST_user
         except KeyboardInterrupt:
