@@ -136,7 +136,10 @@ class apimgr_yml(object):
             filename,
             port,
             campus_interface,
-            image_version
+            image_version,
+            utilitybaremetal_password,
+            is_emsvm23e_exist,
+            emsvm23e_password
             ):
         self.filename = "apimgr.yml"
         self.verbose = verbose
@@ -153,6 +156,9 @@ class apimgr_yml(object):
         self.CAMPUS_INTERFACE = campus_interface
         self.API_PORT = port
         self.IMAGE_VERSION = image_version
+        self.UTILITYBAREMETAL_PASSWORD = utilitybaremetal_password
+        self.IS_EMSVM_23E_EXIST = is_emsvm23e_exist
+        self.EMSVM23E_PASSWORD = emsvm23e_password
 
         self.cfg_loaded, self.cfg = self.__load_yml_file()
         if self.cfg_loaded:
@@ -240,11 +246,35 @@ class apimgr_yml(object):
         if self.API_PORT is None:
             self.API_PORT = self.__ask_API_PORT()
 
-        self.UTILITYBAREMETAL_PASSWORD = self.__ask_UTILITYBAREMETAL_PASSWORD()
-        self.IS_EMSVM_23E_EXIST = self.__is_ESMVM23E_EXIST()
+        # Lets deal with utilityBareMetal passwords if applicable
+        if self.UTILITYBAREMETAL_PASSWORD is not None and self.UTILITYBAREMETAL_PASSWORD != "":
+            self.run_log.debug(
+                "We got utilityBareMetal password from command line"
+            )
+        else:
+            self.run_log.debug(
+                "We do not have utilityBareMetal password from command line. reading it now"
+            )
+            self.UTILITYBAREMETAL_PASSWORD = self.__ask_UTILITYBAREMETAL_PASSWORD()
+
+        if self.IS_EMSVM_23E_EXIST is not None and self.IS_EMSVM_23E_EXIST != "":
+            self.run_log.debug(
+                "We got is EMSVM-23E exist from command line"
+            )
+        else:
+            self.run_log.debug(
+                "We do not have is EMSVM-23E exist from command line. reading it now"
+            )
+            self.IS_EMSVM_23E_EXIST = self.__is_ESMVM23E_EXIST()
+
         self.EMSVM23E_PASSWORD = ""
-        if self.IS_EMSVM_23E_EXIST == "yes":
-            self.EMSVM23E_PASSWORD = self.__ask_EMSVM23E_PASSWORD()
+        if self.IS_EMSVM_23E_EXIST == "yes" and (self.EMSVM23E_PASSWORD is not None and self.EMSVM23E_PASSWORD != ""):
+            self.run_log.debug(
+                "We got EMSVM-23E password from command line."
+            )
+        else:
+            if self.EMSVM23E_PASSWORD is None or self.EMSVM23E_PASSWORD == "":
+                self.EMSVM23E_PASSWORD = self.__ask_EMSVM23E_PASSWORD()
 
         with open("credentials.properties", "w") as file:
             file.write(f"UTILITYBAREMETAL_PASSWORD={self.UTILITYBAREMETAL_PASSWORD}\n")
