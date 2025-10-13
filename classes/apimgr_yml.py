@@ -242,7 +242,8 @@ class apimgr_yml(object):
 
         self.UTILITYBAREMETAL_PASSWORD = self.__ask_UTILITYBAREMETAL_PASSWORD()
         self.IS_EMSVM_23E_EXIST = self.__is_ESMVM23E_EXIST()
-        self.EMSVM23E_PASSWORD = self.__ask_EMSVM23E_PASSWORD()
+        if self.IS_EMSVM_23E_EXIST == "yes":
+            self.EMSVM23E_PASSWORD = self.__ask_EMSVM23E_PASSWORD()
 
         with open("credentials.properties", "w") as file:
             file.write(f"UTILITYBAREMETAL_PASSWORD={self.UTILITYBAREMETAL_PASSWORD}\n")
