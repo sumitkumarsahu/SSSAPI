@@ -249,7 +249,7 @@ class apimgr_yml(object):
         with open("credentials.properties", "w") as file:
             file.write(f"UTILITYBAREMETAL_PASSWORD={self.UTILITYBAREMETAL_PASSWORD}\n")
             file.write(f"IS_EMSVM_23E_EXIST={self.IS_EMSVM_23E_EXIST}\n")
-            file.write(f"EMSV23E_PASSWORD={self.EMSVM23E_PASSWORD}\n")
+            file.write(f"EMSVM23E_PASSWORD={self.EMSVM23E_PASSWORD}\n")
 
         self.run_log.debug(
             "We use UTILITY hostname to derivate names for Management. Safe option."
