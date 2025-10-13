@@ -410,7 +410,7 @@ class apimgr_yml(object):
                     "Going to ask the utlityBareMetal password"
                 )
                 UTILITYBAREMETAL_PASSWORD_user = input(
-                    "Please type utilityBareMetal password to setup passwordless SSH (default: cluster): "
+                    "Please type IBM Utility Bare Metal password to setup passwordless SSH (default: cluster): "
                 )
                 if UTILITYBAREMETAL_PASSWORD_user == "":
                     UTILITYBAREMETAL_PASSWORD_user = "cluster"
@@ -436,7 +436,7 @@ class apimgr_yml(object):
                     "Going to ask is EMSVM-23E exists"
                 )
                 IS_EMSVM_23E_EXIST_user = input(
-                    "Going to ask is EMSVM-23E exists (default: no): "
+                    "Is EMSVM-23E exists (default: no): "
                 )
                 if IS_EMSVM_23E_EXIST_user == "":
                     IS_EMSVM_23E_EXIST_user = "no"
