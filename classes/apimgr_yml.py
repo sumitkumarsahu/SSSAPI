@@ -268,16 +268,13 @@ class apimgr_yml(object):
             self.IS_EMSVM_23E_EXIST = self.__is_ESMVM23E_EXIST()
 
         self.EMSVM23E_PASSWORD = ""
-        if self.IS_EMSVM_23E_EXIST is not None:
-            if self.EMSVM23E_PASSWORD is not None and self.EMSVM23E_PASSWORD != "":
-                self.run_log.debug(
-                    "We got EMSVM-23E password from command line."
-                )
+        if self.IS_EMSVM_23E_EXIST.lower() == "yes":
+            if self.EMSVM23E_PASSWORD:
+                self.run_log.debug("We got EMSVM-23E password from command line.")
             else:
-                self.run_log.debug(
-                    "We do not have EMSVM-23E password from command line. reading it now"
-                )
+                self.run_log.debug("EMSVM-23E password not provided via command line. Asking now...")
                 self.EMSVM23E_PASSWORD = self.__ask_EMSVM23E_PASSWORD()
+
 
         with open("credentials.properties", "w") as file:
             file.write(f"UTILITYBAREMETAL_PASSWORD={self.UTILITYBAREMETAL_PASSWORD}\n")
