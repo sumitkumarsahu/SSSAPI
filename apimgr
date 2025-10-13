@@ -271,6 +271,22 @@ def run_container(force, is_startapicont=False):
             print("-- Exiting... --")
             sys.exit(rc)
 
+        credentials_file = "credentials.properties"
+        cmd = "podman cp " + credentials_file + " utilityBareMetal:/var/lib/ess/" + credentials_file
+
+        rc = subprocess.call(cmd, shell=True)
+        if rc != 0:
+            print("-- [ERROR] Failed to copy credentials.properties into container --")
+            print("-- Exiting... --")
+            sys.exit(rc)
+
+        file_path = os.path.join(os.getcwd(), credentials_file)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print(f"-- [WARNING] {file_path} has been deleted.")
+        else:
+            print(f"-- [INFO] {file_path} does not exist.")
+
         print("-- [INFO] Setting SSS API Container to start as a systemd service --")
         print("-- [INFO] SSS API Container set to autostart --")
 
