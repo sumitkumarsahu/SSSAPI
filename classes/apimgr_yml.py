@@ -381,7 +381,7 @@ class apimgr_yml(object):
                     "Going to ask the utlityBareMetal password"
                 )
                 UTILITYBAREMETAL_PASSWORD_user = input(
-                    "Please type utilityBareMetal password to setup passwordless SSH (cluster): "
+                    "Please type utilityBareMetal password to setup passwordless SSH (default: cluster): "
                 )
                 if UTILITYBAREMETAL_PASSWORD_user == "":
                     UTILITYBAREMETAL_PASSWORD_user = "cluster"
@@ -459,7 +459,7 @@ class apimgr_yml(object):
                     "Going to ask the user for a Campus interface name"
                 )
                 CAMPUS_INTERFACE_user = input(
-                    "Please type a Campus interfae name (campus): "
+                    "Please type a Campus interfae name (default: campus): "
                 )
                 if CAMPUS_INTERFACE_user == "":
                     CAMPUS_INTERFACE_user = "campus"
@@ -485,7 +485,7 @@ class apimgr_yml(object):
                     "Going to ask the user for a Image Version"
                 )
                 IMAGE_VERSION_user = input(
-                    "Please type a Image Version (7.0.0.0): "
+                    "Please type a Image Version (default: 7.0.0.0): "
                 )
                 if IMAGE_VERSION_user == "":
                     IMAGE_VERSION_user = "7.0.0.0"
@@ -516,7 +516,7 @@ class apimgr_yml(object):
                     "Going to ask the user for a API Port number default 46443"
                 )
                 API_PORT_user = input(
-                    "Please type a API Port default (46443): "
+                    "Please type a API Port default (defalt: 46443): "
                 )
                 if API_PORT_user == "":
                     API_PORT_user = "46443"

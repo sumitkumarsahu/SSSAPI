@@ -272,7 +272,7 @@ def run_container(force, is_startapicont=False):
             sys.exit(rc)
 
         credentials_file = "credentials.properties"
-        cmd = "podman cp " + credentials_file + " utilityBareMetal:/var/lib/ess/" + credentials_file
+        cmd = "podman cp " + credentials_file + " " + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + ":/var/lib/ess/" + credentials_file
 
         rc = subprocess.call(cmd, shell=True)
         if rc != 0:
