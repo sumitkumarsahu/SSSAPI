@@ -170,12 +170,12 @@ def run_container(force, is_startapicont=False):
     if not is_startapicont:
         apimgr_EOL_warning()
 
-    print("-- [INFO] Going to run container image - " + IMAGE_NAME + ":" +
+    print("-- [INFO] Running the container image - " + IMAGE_NAME + ":" +
           str(IMAGE_VERSION))
 
     if force:
         print(
-            "-- [WARNING] Running container with -x or --force option will remove old EXIT state container --")
+            "-- [WARNING] The '-x' or '--force' option removes containers that are in the EXIT state. --")
         cmd = "systemctl --user stop container-" +cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + " && "\
             "podman container rm -f " + cfg["CONTAINER"]["CONTAINER_HOSTNAME"]
         subprocess.call(cmd, shell=True)
@@ -222,13 +222,13 @@ def run_container(force, is_startapicont=False):
             print(
                 "-- [INFO] Container with ACTIVE state found. Trying to attach the existing container --")
 
-        print("-- [INFO] Container resumes/started. Please check \"systemctl --user status container-" + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + ".service\" ")
+        print("-- [INFO] Container resumed/started. Check \"systemctl --user status container-" + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + ".service\" ")
         print("-- [INFO] Re-login to container using \"podman exec -it " + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + " /bin/bash\" command --")
     else:
         # Deleting all Virtual interface related to Management Interface
         # cleanup_virtual_interfaces()
-        print("-- [INFO] Automatic initialization of the container begin shortly --")
-        print("-- [INFO] Please be patient as the startup can take a few minutes --")
+        print("-- [INFO] Automatic initialization of the container will begin shortly. --")
+        print("-- Startup can take several minutes. --")
         time.sleep(3)
 
         clean_nftables()
@@ -283,12 +283,12 @@ def run_container(force, is_startapicont=False):
         file_path = os.path.join(os.getcwd(), credentials_file)
         if os.path.exists(file_path):
             os.remove(file_path)
-            print(f"-- [WARNING] {file_path} has been deleted.")
+            print(f"-- [WARNING] The {file_path} file was deleted.")
         else:
             print(f"-- [INFO] {file_path} does not exist.")
 
-        print("-- [INFO] Setting SSS API Container to start as a systemd service --")
-        print("-- [INFO] SSS API Container set to autostart --")
+        print("-- [INFO] The API server container is being configured to start as a systemd service. --")
+        print("-- [INFO] The API server container is set to autostart. --")
 
         service_file = "container-" + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + ".service"
         cmd = "cd ~; "
@@ -306,8 +306,8 @@ def run_container(force, is_startapicont=False):
             print("-- Exiting... --")
             sys.exit(rc)
 
-        print("-- [INFO] Container created in background. Please check \"systemctl --user start container-" + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + ".service\" to start using container. --")
-        print("-- [INFO] Login to container using \"podman exec -it " + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + " /bin/bash\" command --")
+        print("-- [INFO] The container was created successfully in the background. To start the container, run the \"systemctl --user start container-" + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + ".service\" to start using container. --")
+        print("-- [INFO] To log in to the container, run the \"podman exec -it " + cfg["CONTAINER"]["CONTAINER_HOSTNAME"] + " /bin/bash\" command. --")
     return rc
 
 # -----------------------------------------------------------------------------
@@ -358,14 +358,14 @@ def install_image_from_repo(force):
     global IMAGE_VERSION
     rc = 1
 
-    print("-- [INFO] Goint to pull Deployment GUI Container image from IBM repository... --")
+    print("-- [INFO] The API container image is about to be pulled from the IBM repository. --")
     if IMAGE_VERSION == None:
-        print("-- [ERROR] Image version should be provided inside deployguimgr.yml file... --")
+        print("-- [ERROR] Image version should be provided inside apimgr.yml file... --")
         sys.exit(1)
 
     cmd = ""
     if force:
-        print("-- [WARNING] Going to forcibly remove the container image " + IMAGE_NAME + ":" + IMAGE_VERSION + "... --")
+        print("-- [WARNING] The existing container image " + IMAGE_NAME + ":" + IMAGE_VERSION + "is being deleted forcibly. --")
         cmd = "podman image rm -f " + IMAGE_NAME + ":" + IMAGE_VERSION
         rc = subprocess.call(cmd, shell=True)
         if rc != 0:
@@ -376,12 +376,12 @@ def install_image_from_repo(force):
     rc = subprocess.call(cmd, shell=True)
     if rc != 0:
         print("-- [ERROR] Failed to pull service container image from IBM repository... --")
-        print("-- [ERROR] Please login to IBM Container Repository using podman login command before starting container --")
+        print("-- [ERROR] Login to IBM Container Repository using podman login command before starting container --")
         print("-- Exiting... --")
         rc = 1
         sys.exit(1)
     else:
-        print("-- [INFO] Service container image has been pulled successfully... --")
+        print("-- [INFO] The container image was pulled successfully. --")
         rc = 0
 
     return rc
@@ -398,7 +398,7 @@ def free_space_check():
         print("-- [INFO] Free space check PASSED --")
     else:
         print(
-            "-- [ERROR]:Not enough space in /home - Please fix and re-run installer --")
+            "-- [ERROR]:Not enough space in /home - Fix and re-run installer --")
         sys.exit(1)
 
 
@@ -452,7 +452,7 @@ def delete_network(network_name):
             " --")
         print(
             "-- [ERROR] Network either exist and in use by container or some issue with network creation. --")
-        print("-- [ERROR] Please inspect the running container make sure the network is not in use before deletion. --")
+        print("-- [ERROR] Inspect the running container. Verify that the network is not in use before deletion. --")
     return rc
 
 
@@ -509,19 +509,19 @@ def main():
     if allow_apimgr is None:
         print(
             "-- [WARNING] The tool 'apimgr' has been deprecated. " +
-            "Please use 'startAPIcont' instead. --"
+            "Use 'startAPIcontainer' instead. --"
         )
         sys.exit(0)
     elif allow_apimgr == "1":
         print(
             "-- [WARNING] The tool 'apimgr' has been deprecated. " +
             "Proceeding to use apimgr since you are focing it by export ALLOW_APIMGR=1. " +
-            "Please avoid using this flag out of an IBM facility. --"
+            "Avoid using this flag out of an IBM facility. --"
         )
     else:
         print(
             "-- [WARNING] The tool 'apimgr' has been deprecated. " +
-            "Please use 'startAPIcont' instead. --"
+            "Use 'startAPIcontainer' instead. --"
         )
         sys.exit(0)
 
