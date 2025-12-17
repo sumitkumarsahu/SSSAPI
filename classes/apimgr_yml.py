@@ -143,7 +143,7 @@ class apimgr_yml(object):
             ):
         self.filename = "apimgr.yml"
         self.verbose = verbose
-        self.output_dir = "./logs"
+        self.output_dir = "./logs/"
         self.total_errors = 0
         self.merged_cfg = {}
         self.st_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
@@ -151,7 +151,6 @@ class apimgr_yml(object):
         self.run_log = self.__start_logger()
         self.static_apimgr_yml = STATIC_apimgr_YML
         self.config_apimgr_yml = CONFIG_apimgr_YML
-        currentDirectory = os.getcwd()
         self.IMAGE_TARBALL = filename
         self.CAMPUS_INTERFACE = campus_interface
         self.API_PORT = port
