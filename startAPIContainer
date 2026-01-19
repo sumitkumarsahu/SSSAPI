@@ -67,7 +67,7 @@ def parse_arguments():
         '--image-version',
         action='store',
         dest='image_version',
-        help='API server version to deploy. (default: 7.0.0.0)',
+        help='API server version to deploy. (default: 7.0.0.1)',
         default=None)
 
 
