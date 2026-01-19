@@ -53,7 +53,7 @@ STATIC_apimgr_YML = {
     'CONTAINER_HOSTNAME': 'utilityBareMetal-api-official',
     'RAS_INTERFACE': 'virbr1',
     'RAS_INTERFACE_IP': '10.23.16.1',
-    'IMAGE_NAME': 'cp.icr.io/cp/scalesystem/sss_api',
+    'IMAGE_NAME': 'cp.stg.icr.io/cp/scalesystem/sss_api',
     'SSH_PORT': '20022',
 
     'LOG': '/home/apiadmin/log',
@@ -521,7 +521,8 @@ class apimgr_yml(object):
                 elif IMAGE_VERSION_user == "6.2.3.0" or \
                         IMAGE_VERSION_user == "6.2.3.1" or \
                         IMAGE_VERSION_user == "6.2.3.2" or \
-                        IMAGE_VERSION_user == "7.0.0.0":
+                        IMAGE_VERSION_user == "7.0.0.0" or \
+                        IMAGE_VERSION_user == "7.0.1.0" :
                     break
                 else:
                     print("Image name should be 6.2.3.0 or 6.2.3.1 or 6.2.3.2 or 7.0.0.0 or 7.0.1.0\n")
