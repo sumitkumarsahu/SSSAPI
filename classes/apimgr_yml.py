@@ -53,7 +53,7 @@ STATIC_apimgr_YML = {
     'CONTAINER_HOSTNAME': 'utilityBareMetal-api-official',
     'RAS_INTERFACE': 'virbr1',
     'RAS_INTERFACE_IP': '10.23.16.1',
-    'IMAGE_NAME': 'cp.icr.io/cp/scalesystem/sss_api',
+    'IMAGE_NAME': 'cp.stg.icr.io/cp/scalesystem/sss_api',
     'SSH_PORT': '20022',
 
     'LOG': '/home/apiadmin/log',
@@ -66,7 +66,7 @@ CONFIG_apimgr_YML = {
     'UTILITY_HOSTNAME': 'utilityBareMetal',
     'CAMPUS_INTERFACE': 'campus',
     'CAMPUS_INTERFACE_IP': '192.168.100.10',
-    'IMAGE_VERSION': '7.0.0.0',
+    'IMAGE_VERSION': '7.0.1.0',
 
     'API_PORT': '46443'
 }
@@ -143,7 +143,7 @@ class apimgr_yml(object):
             ):
         self.filename = "apimgr.yml"
         self.verbose = verbose
-        self.output_dir = "./logs"
+        self.output_dir = "./logs/"
         self.total_errors = 0
         self.merged_cfg = {}
         self.st_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
@@ -151,7 +151,6 @@ class apimgr_yml(object):
         self.run_log = self.__start_logger()
         self.static_apimgr_yml = STATIC_apimgr_YML
         self.config_apimgr_yml = CONFIG_apimgr_YML
-        currentDirectory = os.getcwd()
         self.IMAGE_TARBALL = filename
         self.CAMPUS_INTERFACE = campus_interface
         self.API_PORT = port
@@ -514,18 +513,19 @@ class apimgr_yml(object):
                     "Going to ask the user for a Image Version"
                 )
                 IMAGE_VERSION_user = input(
-                    "Enter the image version (default: 7.0.0.0): "
+                    "Enter the image version (default: 7.0.1.0): "
                 )
                 if IMAGE_VERSION_user == "":
-                    IMAGE_VERSION_user = "7.0.0.0"
+                    IMAGE_VERSION_user = "7.0.1.0"
                     break
                 elif IMAGE_VERSION_user == "6.2.3.0" or \
                         IMAGE_VERSION_user == "6.2.3.1" or \
                         IMAGE_VERSION_user == "6.2.3.2" or \
-                        IMAGE_VERSION_user == "7.0.0.0":
+                        IMAGE_VERSION_user == "7.0.0.0" or \
+                        IMAGE_VERSION_user == "7.0.1.0" :
                     break
                 else:
-                    print("Image name should be 6.2.3.0 or 6.2.3.1 or 6.2.3.2 or 7.0.0.0\n")
+                    print("Image name should be 6.2.3.0 or 6.2.3.1 or 6.2.3.2 or 7.0.0.0 or 7.0.1.0\n")
             return IMAGE_VERSION_user
         except KeyboardInterrupt:
             print("")
